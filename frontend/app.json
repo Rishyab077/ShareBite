@@ -1,0 +1,11 @@
+{
+  "expo": {
+    "name": "ShareBite",
+    "slug": "sharebite",
+    "version": "1.0.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "platforms": ["ios", "android", "web"],
+    "assetBundlePatterns": ["**/*"]
+  }
+}
