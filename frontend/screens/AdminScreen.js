@@ -9,8 +9,8 @@ export default function AdminScreen() {
 
   // ✅ Function to fetch all donations from the server
   const fetchDonations = () => {
-    axios
-      .get("http://10.113.75.14:5000/api/donations")
+    aaxios.get("https://sharebite-8dqo.onrender.com/api/donations")
+
       .then((res) => setDonations(res.data)); // Update state with fetched donations
   };
 
@@ -21,14 +21,14 @@ export default function AdminScreen() {
 
   // ✅ Delete a donation by ID
   const handleDelete = async (id) => {
-    await axios.delete(`http://10.113.75.14:5000/api/donations/${id}`);
+    await axios.delete(`https://sharebite-8dqo.onrender.com/api/donations/${id}`);
     Alert.alert("Deleted", "Donation removed"); // Show confirmation
     fetchDonations(); // Refresh list after deletion
   };
 
   // ✅ Mark a donation as delivered by ID
   const handleDeliver = async (id) => {
-    await axios.put(`http://10.113.75.14:5000/api/donations/${id}`, { status: "delivered" });
+    await axios.put(`https://sharebite-8dqo.onrender.com/api/donations/${id}`, { status: "delivered" });
     Alert.alert("Updated", "Marked as delivered"); // Show confirmation
     fetchDonations(); // Refresh list after update
   };

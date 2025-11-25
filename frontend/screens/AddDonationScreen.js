@@ -13,7 +13,7 @@ export default function AddDonationScreen({ navigation }) {
   // ✅ Function to send donation data to backend
   const handleAddDonation = async () => {
     try {
-      await axios.post("http://10.113.75.14:5000/api/donations", {
+      await axios.post("https://sharebite-8dqo.onrender.com/api/donations", {
         donorName,
         foodItems,
         quantity,

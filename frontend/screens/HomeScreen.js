@@ -11,7 +11,7 @@ export default function HomeScreen({ navigation }) {
   // ✅ useEffect runs once when the component mounts
   useEffect(() => {
     // 🔹 Fetch all donations from backend
-    axios.get("http://10.113.75.14:5000/api/donations").then((res) => {
+    axios.get("https://sharebite-8dqo.onrender.com/api/donations").then((res) => {
       // 🔹 Filter donations with status "pending"
       const pending = res.data.filter((d) => d.status === "pending");
       

@@ -13,7 +13,7 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     try {
       // 🔹 Send POST request to backend API with email and password
-      const res = await axios.post("http://10.113.75.14:5000/api/auth/login", { email, password });
+      const res = await axios.post("https://sharebite-8dqo.onrender.com/api/auth/login", { email, password });
       
       // 🔹 Check user role returned from backend
       if (res.data.role === "admin") {

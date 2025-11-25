@@ -1,3 +1,5 @@
+
+
 # ✅ Import necessary modules from LangChain
 from langchain_community.embeddings import SentenceTransformerEmbeddings  # To convert text into vector embeddings
 from langchain_community.vectorstores import FAISS  # To store and search embeddings efficiently

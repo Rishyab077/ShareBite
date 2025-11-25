@@ -1,0 +1,8 @@
+flask
+python-dotenv
+faiss-cpu
+sentence-transformers
+langchain
+langchain-community
+transformers
+torch

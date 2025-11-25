@@ -10,7 +10,7 @@ export default function AvailableDonationsScreen() {
 
   // ✅ Fetch donations when the component loads
   useEffect(() => {
-    axios.get("http://10.113.75.14:5000/api/donations").then((res) => {
+    axios.get("https://sharebite-8dqo.onrender.com/api/donations").then((res) => {
       // 🔹 Filter only donations that are still pending
       const pending = res.data.filter((d) => d.status === "pending");
       setDonations(pending); // Save pending donations to state

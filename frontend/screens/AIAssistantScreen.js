@@ -15,7 +15,7 @@ export default function AIAssistantScreen() {
   const askAI = async () => {
     try {
       // 🔹 Make POST request to the Flask RAG API
-      const res = await axios.post("http://10.113.75.14:8000/ask", { query: question });
+      const res = await axios.post("https://sharebite-8dqo.onrender.com/ask", { query: question });
 
       // 🔹 Update state with the answer from AI
       setAnswer(res.data.answer);

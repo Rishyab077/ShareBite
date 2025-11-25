@@ -32,6 +32,6 @@ const PORT = process.env.PORT || 5000;
 
 // ✅ Start server and listen on all network interfaces
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
-  console.log(`🌐 Access from Expo using: http://<your-local-ip>:${PORT}`);
+  console.log(`✅ Server is running on https://sharebite-8dqo.onrender.com/:${PORT}`);
+  console.log(`🌐 Access from Expo using: http://<sharebite-8dqo.onrender.com/>:${PORT}`);
 });

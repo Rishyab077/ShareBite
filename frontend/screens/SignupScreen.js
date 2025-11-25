@@ -14,7 +14,7 @@ export default function SignupScreen({ navigation }) {
   const handleSignup = async () => {
     try {
       // 🔹 Send POST request to backend API with user data
-      await axios.post("http://10.113.75.14:5000/api/auth/signup", { name, email, password });
+      await axios.post("https://sharebite-8dqo.onrender.com/api/auth/signup", { name, email, password });
       
       // 🔹 Show success alert
       Alert.alert("Success", "User registered successfully!");
