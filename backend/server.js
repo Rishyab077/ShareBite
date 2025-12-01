@@ -1,41 +1,36 @@
 import express from "express";
+import mongoose from "mongoose";
 import dotenv from "dotenv";
 import cors from "cors";
-import connectDB from "./config/db.js";
-import authRoutes from "./routes/authRoutes.js";
-import donationRoutes from "./routes/donationRoutes.js";
-import feedbackRoutes from "./routes/feedbackRoutes.js";   // ✅ import feedback
-import profileRoutes from "./routes/profileRoutes.js";     // ✅ import profile
 
-// ✅ Load environment variables
+// Load environment variables
 dotenv.config();
 
-// ✅ Initialize Express
 const app = express();
+app.use(cors());
+app.use(express.json());
 
-// ✅ Middleware
-app.use(cors()); // allow requests from frontend (Expo)
-app.use(express.json()); // parse JSON request bodies
+// Use Render port or fallback (local use)
+const PORT = process.env.PORT || 10000;
 
-// ✅ Connect to MongoDB
-connectDB();
+// MongoDB connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB connected"))
+  .catch((err) => console.log("❌ MongoDB connection error:", err));
 
-// ✅ Basic test route
-app.get("/", (req, res) => {
-  res.send("Welcome to ShareBite API 🍴");
-});
+// Routes
+import authRoutes from "./routes/authRoutes.js";
+import donationRoutes from "./routes/donationRoutes.js";
+import feedbackRoutes from "./routes/feedbackRoutes.js";
+import profileRoutes from "./routes/profileRoutes.js";
 
-// ✅ API routes
 app.use("/api/auth", authRoutes);
 app.use("/api/donations", donationRoutes);
-app.use("/api/feedback", feedbackRoutes);   // ✅ feedback route
-app.use("/api/profile", profileRoutes);     // ✅ profile route
+app.use("/api/feedback", feedbackRoutes);
+app.use("/api/profile", profileRoutes);
 
-// ✅ Port configuration
-const PORT = process.env.PORT || 5000;
-
-// ✅ Start server and listen on all network interfaces
+// 🟢 Start server (IMPORTANT for Render)
 app.listen(PORT, "0.0.0.0", () => {
-  console.log(`✅ Server is running on http://localhost:${PORT}`);
-  console.log(`🌐 Access from Expo using: http://10.120.88.14:${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
