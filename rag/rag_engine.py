@@ -60,8 +60,8 @@ def get_answer(query):
         print("🧩 Initializing Hugging Face model...")
         pipe = pipeline(
             "text2text-generation",
-            model="google/flan-t5-large",
-            tokenizer="google/flan-t5-large",
+            model="google/flan-t5-small",
+            tokenizer="google/flan-t5-small",
             max_length=512,
             temperature=0.3
         )
