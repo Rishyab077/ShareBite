@@ -1,0 +1,20 @@
+# Node dependencies
+backend/node_modules/
+frontend/node_modules/
+
+# Expo internal
+frontend/.expo/
+rag/.expo/
+
+# Python cache
+rag/__pycache__/
+
+# Environment files
+backend/.env
+rag/.env
+
+# Vector store (optional)
+rag/vectorStore/
+
+# System files
+.DS_Store

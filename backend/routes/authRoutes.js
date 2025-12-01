@@ -1,10 +1,9 @@
 // 📦 Import required modules
-import express from "express"; // Used to create routes and handle HTTP requests
-import bcrypt from "bcryptjs"; // Used to hash (encrypt) passwords securely
-import jwt from "jsonwebtoken"; // Used to create JSON Web Tokens for authentication
-import User from "../models/User.js"; // Import the User model (MongoDB schema)
+import express from "express";
+import bcrypt from "bcryptjs"; // bcryptjs works well with Node
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
 
-// 🚀 Create an Express router
 const router = express.Router();
 
 // ---------------------------
@@ -12,27 +11,30 @@ const router = express.Router();
 // ---------------------------
 router.post("/signup", async (req, res) => {
   try {
-    // 🧠 Extract name, email, and password from the request body
     const { name, email, password } = req.body;
 
-    // 🔎 Check if a user with the same email already exists in the database
-    const exists = await User.findOne({ email });
-    if (exists) {
+    // Check if user already exists
+    const existingUser = await User.findOne({ email });
+    if (existingUser) {
       return res.status(400).json({ message: "User already exists" });
     }
 
-    // 🔐 Hash (encrypt) the password before saving it
+    // Hash password
     const hashedPassword = await bcrypt.hash(password, 10);
 
-    // 🆕 Create a new user using the User model
-    const newUser = new User({ name, email, password: hashedPassword });
-    await newUser.save(); // 💾 Save user to MongoDB
+    // Create new user
+    const newUser = new User({
+      name,
+      email,
+      password: hashedPassword,
+    });
 
-    // ✅ Send success response
+    await newUser.save();
+
     res.status(201).json({ message: "User registered successfully" });
   } catch (err) {
-    // ❌ Handle errors (e.g., database or server issues)
-    res.status(500).json({ message: "Server error", error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Failed to register", error: err.message });
   }
 });
 
@@ -41,32 +43,30 @@ router.post("/signup", async (req, res) => {
 // ---------------------------
 router.post("/login", async (req, res) => {
   try {
-    // 🧠 Extract email and password from the request body
     const { email, password } = req.body;
 
-    // 🔎 Check if the user exists in the database
+    // Find user by email
     const user = await User.findOne({ email });
     if (!user) {
-      return res.status(400).json({ message: "Invalid email" });
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // 🔑 Compare entered password with stored hashed password
-    const isValidPassword = await bcrypt.compare(password, user.password);
-    if (!isValidPassword) {
-      return res.status(400).json({ message: "Invalid password" });
+    // Compare password
+    const isPasswordCorrect = await bcrypt.compare(password, user.password);
+    if (!isPasswordCorrect) {
+      return res.status(400).json({ message: "Invalid credentials" });
     }
 
-    // 🎟️ Generate a JWT token for secure login
+    // Create JWT token
     const token = jwt.sign(
-      { id: user._id, role: user.role }, // Payload (user ID + role)
-      process.env.JWT_SECRET || "defaultsecret", // Secret key for signing token
-      { expiresIn: "7d" } // Token will expire in 7 days
+      { id: user._id, role: user.role || "user" },
+      process.env.JWT_SECRET || "defaultsecret",
+      { expiresIn: "7d" }
     );
 
-    // ✅ Send response with token and user details
     res.status(200).json({
       message: "Login successful",
-      token, // Used for authentication in future requests
+      token,
       user: {
         id: user._id,
         name: user.name,
@@ -75,10 +75,69 @@ router.post("/login", async (req, res) => {
       },
     });
   } catch (err) {
-    // ❌ Handle server or database errors
-    res.status(500).json({ message: "Server error", error: err.message });
+    console.error(err);
+    res.status(500).json({ message: "Login failed", error: err.message });
   }
 });
 
-// 📤 Export the router so it can be used in server.js
+// ---------------------------
+// 🟣 Get Logged-in User Info
+// ---------------------------
+router.get("/me", async (req, res) => {
+  try {
+    const token = req.headers.authorization?.split(" ")[1];
+    if (!token) {
+      return res.status(401).json({ message: "No token provided" });
+    }
+
+    const decoded = jwt.verify(token, process.env.JWT_SECRET || "defaultsecret");
+
+    const user = await User.findById(decoded.id).select("-password");
+    if (!user) return res.status(404).json({ message: "User not found" });
+
+    res.json(user);
+  } catch (err) {
+    res.status(500).json({ error: "Failed to fetch user", details: err.message });
+  }
+});
+
+
+
 export default router;
+
+// -------------------------------------------------------------
+// 1️⃣ Signup Route (POST /signup)
+// Used when a user creates a new account.
+//
+// It does:
+// ✔️ Check if email already exists
+// ✔️ Hash the password
+// ✔️ Save the user in the database
+// ✔️ Send success message ("User registered successfully")
+// -------------------------------------------------------------
+
+// -------------------------------------------------------------
+// 2️⃣ Login Route (POST /login)
+// Used when a user logs in.
+//
+// It does:
+// ✔️ Check if email exists
+// ✔️ Compare the entered password with stored password
+// ✔️ Create a JWT token for authentication
+// ✔️ Send user info + token back to the frontend
+// -------------------------------------------------------------
+
+// -------------------------------------------------------------
+// 3️⃣ Get Logged-in User Route (GET /me)
+// Used to fetch profile of the currently logged-in user.
+//
+// It does:
+// ✔️ Read token sent by frontend (Authorization header)
+// ✔️ Verify the token
+// ✔️ Find the user from the database using token ID
+// ✔️ Return user details (password removed)
+// -------------------------------------------------------------
+
+// 🎯 Summary:
+// This file handles signup, login, and getting current user info using JWT.
+// -------------------------------------------------------------

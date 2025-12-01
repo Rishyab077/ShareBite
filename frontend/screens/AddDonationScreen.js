@@ -1,67 +1,124 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import { View, Text, TextInput, TouchableOpacity, Alert, StyleSheet, ScrollView } from "react-native";
 import axios from "axios";
 
-// ✅ Screen for adding a new donation
 export default function AddDonationScreen({ navigation }) {
-  // ✅ State variables to store input values
-  const [donorName, setDonorName] = useState(""); // Donor's name
-  const [foodItems, setFoodItems] = useState(""); // Food items being donated
-  const [quantity, setQuantity] = useState("");   // Quantity of food
-  const [location, setLocation] = useState("");   // Pickup location
+  const [donorName, setDonorName] = useState("");
+  const [foodItems, setFoodItems] = useState("");
+  const [quantity, setQuantity] = useState("");
+  const [location, setLocation] = useState("");
 
-  // ✅ Function to send donation data to backend
   const handleAddDonation = async () => {
     try {
-      await axios.post("https://sharebite-8dqo.onrender.com/api/donations", {
+      await axios.post("http://10.120.88.14:10000/api/donations", {
         donorName,
         foodItems,
         quantity,
         location,
       });
-
-      // ✅ Show success message
       Alert.alert("Success", "Donation added!");
-      navigation.goBack(); // Go back to previous screen
+      navigation.goBack();
     } catch {
-      // ✅ Show error if API call fails
       Alert.alert("Error", "Failed to add donation.");
     }
   };
 
   return (
-    <View style={{ padding: 20 }}>
-      {/* ✅ Screen title */}
-      <Text style={{ fontSize: 20, fontWeight: "bold" }}>Add Donation</Text>
+    <ScrollView contentContainerStyle={styles.container}>
+      <Text style={styles.title}>Add Donation</Text>
 
-      {/* ✅ Input fields for donation details */}
       <TextInput
         placeholder="Donor Name"
         value={donorName}
         onChangeText={setDonorName}
-        style={{ borderWidth: 1, padding: 10, marginVertical: 5 }}
+        style={styles.input}
       />
       <TextInput
         placeholder="Food Items"
         value={foodItems}
         onChangeText={setFoodItems}
-        style={{ borderWidth: 1, padding: 10, marginVertical: 5 }}
+        style={styles.input}
       />
       <TextInput
         placeholder="Quantity"
         value={quantity}
         onChangeText={setQuantity}
-        style={{ borderWidth: 1, padding: 10, marginVertical: 5 }}
+        style={styles.input}
       />
-      <TextInput
-        placeholder="Location"
-        value={location}
-        onChangeText={setLocation}
-        style={{ borderWidth: 1, padding: 10, marginVertical: 5 }}
-      />
+      <TouchableOpacity
+  style={styles.input}
+  onPress={() => navigation.navigate("MapPicker", { setLocation })}
+>
+  <Text style={{ color: "#555" }}>
+    {location ? location : "Select Location on Map"}
+  </Text>
+</TouchableOpacity>
 
-      {/* ✅ Button to submit donation */}
-      <Button title="Add Donation" onPress={handleAddDonation} />
-    </View>
+
+      <TouchableOpacity style={styles.button} onPress={handleAddDonation}>
+        <Text style={styles.buttonText}>Add Donation</Text>
+      </TouchableOpacity>
+    </ScrollView>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 25,
+    backgroundColor: "#eef2f7",
+    flexGrow: 1,
+  },
+
+  // --- Title ---
+  title: {
+    fontSize: 28,
+    fontWeight: "800",
+    color: "#1e2a38",
+    marginBottom: 25,
+    textAlign: "center",
+    letterSpacing: 0.5,
+  },
+
+  // --- Input Boxes ---
+  input: {
+    backgroundColor: "#ffffff",
+    padding: 15,
+    borderRadius: 14,
+    marginVertical: 10,
+    fontSize: 16,
+
+    // Premium border
+    borderWidth: 1,
+    borderColor: "#e3e6ea",
+
+    // Beautiful soft shadow
+    shadowColor: "#000",
+    shadowOpacity: 0.08,
+    shadowOffset: { width: 0, height: 4 },
+    shadowRadius: 8,
+    elevation: 4,
+  },
+
+  // --- Add Donation Button ---
+  button: {
+    backgroundColor: "#16c47f",
+    paddingVertical: 16,
+    borderRadius: 14,
+    alignItems: "center",
+    marginTop: 25,
+
+    // Smooth glow effect
+    shadowColor: "#16c47f",
+    shadowOpacity: 0.3,
+    shadowOffset: { width: 0, height: 5 },
+    shadowRadius: 10,
+    elevation: 6,
+  },
+
+  buttonText: {
+    color: "#fff",
+    fontWeight: "700",
+    fontSize: 18,
+    letterSpacing: 0.6,
+  },
+});

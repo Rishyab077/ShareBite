@@ -22,3 +22,7 @@ const donationSchema = new mongoose.Schema({
 // 🚀 Export the model so it can be used in other files
 // (It will create a "donations" collection in MongoDB)
 export default mongoose.model("Donation", donationSchema);
+
+// This file defines the structure of donation data stored in MongoDB.
+// It has fields like: donorName, foodItems, quantity, location, status.
+// It creates a Donation model you can use everywhere.

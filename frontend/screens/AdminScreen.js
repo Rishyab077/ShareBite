@@ -1,60 +1,130 @@
-import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Button, Alert } from "react-native";
+import React, { useEffect, useState } from "react"; 
+import { View, Text, FlatList, TouchableOpacity, Alert, StyleSheet } from "react-native";
 import axios from "axios";
 
-// ✅ AdminScreen – Dashboard for admin to manage all donations
 export default function AdminScreen() {
-  // ✅ State to store all donations from backend
   const [donations, setDonations] = useState([]);
+  const [feedbacks, setFeedbacks] = useState([]);
 
-  // ✅ Function to fetch all donations from the server
+  // Fetch donations from backend
   const fetchDonations = () => {
-    aaxios.get("https://sharebite-8dqo.onrender.com/api/donations")
-
-      .then((res) => setDonations(res.data)); // Update state with fetched donations
+    axios.get("http://10.120.88.14:10000/api/donations")
+      .then((res) => setDonations(res.data))
+      .catch(err => console.error(err));
   };
 
-  // ✅ Fetch donations when screen loads
+  // Fetch feedback from backend
+  const fetchFeedbacks = () => {
+    axios.get("http://10.120.88.14:10000/api/feedback")
+      .then((res) => setFeedbacks(res.data))
+      .catch(err => console.error(err));
+  };
+
   useEffect(() => {
     fetchDonations();
+    fetchFeedbacks();
   }, []);
 
-  // ✅ Delete a donation by ID
   const handleDelete = async (id) => {
-    await axios.delete(`https://sharebite-8dqo.onrender.com/api/donations/${id}`);
-    Alert.alert("Deleted", "Donation removed"); // Show confirmation
-    fetchDonations(); // Refresh list after deletion
+    await axios.delete(`http://10.120.88.14:10000/api/donations/${id}`);
+    Alert.alert("Deleted", "Donation removed");
+    fetchDonations();
   };
 
-  // ✅ Mark a donation as delivered by ID
   const handleDeliver = async (id) => {
-    await axios.put(`https://sharebite-8dqo.onrender.com/api/donations/${id}`, { status: "delivered" });
-    Alert.alert("Updated", "Marked as delivered"); // Show confirmation
-    fetchDonations(); // Refresh list after update
+    await axios.put(`http://10.120.88.14:10000/api/donations/${id}`, { status: "delivered" });
+    Alert.alert("Updated", "Marked as delivered");
+    fetchDonations();
   };
 
   return (
-    <View style={{ padding: 10 }}>
-      {/* ✅ Dashboard title */}
-      <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 10 }}>Admin Dashboard</Text>
+    <View style={styles.container}>
+      <Text style={styles.title}>Admin Dashboard</Text>
 
-      {/* ✅ Display all donations in a scrollable list */}
+      <Text style={styles.sectionTitle}>Donations</Text>
       <FlatList
-        data={donations} // Data source
-        keyExtractor={(item) => item._id} // Unique key for each donation
+        data={donations}
+        keyExtractor={(item) => item._id}
         renderItem={({ item }) => (
-          <View style={{ borderWidth: 1, padding: 10, margin: 5 }}>
-            {/* Display donation details */}
-            <Text>🍱 {item.foodItems}</Text>
-            <Text>📍 {item.location}</Text>
-            <Text>Status: {item.status}</Text>
-
-            {/* Buttons to mark delivered or delete */}
-            <Button title="✅ Mark Delivered" onPress={() => handleDeliver(item._id)} />
-            <Button title="🗑️ Delete" color="red" onPress={() => handleDelete(item._id)} />
+          <View style={styles.card}>
+            <Text style={styles.foodText}>🍱 {item.foodItems}</Text>
+            <Text style={styles.locationText}>📍 {item.location}</Text>
+            <Text style={styles.statusText}>Status: {item.status}</Text>
+            <View style={styles.buttonContainer}>
+              <TouchableOpacity style={styles.deliverButton} onPress={() => handleDeliver(item._id)}>
+                <Text style={styles.buttonText}>✅ Delivered</Text>
+              </TouchableOpacity>
+              <TouchableOpacity style={styles.deleteButton} onPress={() => handleDelete(item._id)}>
+                <Text style={styles.buttonText}>🗑️ Delete</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         )}
+        contentContainerStyle={{ paddingBottom: 20 }}
+      />
+
+      <Text style={styles.sectionTitle}>Feedbacks</Text>
+      <FlatList
+        data={feedbacks}
+        keyExtractor={(item) => item._id}
+        renderItem={({ item }) => (
+          <View style={styles.card}>
+            <Text style={styles.foodText}>
+              👤 {item.user?.name || "Unknown User"} ({item.user?.email || "N/A"})
+            </Text>
+            <Text style={styles.locationText}>💬 {item.message}</Text>
+          </View>
+        )}
+        contentContainerStyle={{ paddingBottom: 20 }}
       />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  container: { flex: 1, backgroundColor: "#eef2f7", padding: 18 },
+  title: { fontSize: 30, fontWeight: "800", color: "#1e2a38", marginBottom: 20, textAlign: "center", letterSpacing: 0.6 },
+  sectionTitle: { fontSize: 22, fontWeight: "700", color: "#34495e", marginTop: 15, marginBottom: 10 },
+  card: {
+    backgroundColor: "#ffffff",
+    borderRadius: 18,
+    padding: 18,
+    marginVertical: 10,
+    shadowColor: "#000",
+    shadowOpacity: 0.06,
+    shadowOffset: { width: 0, height: 6 },
+    shadowRadius: 10,
+    elevation: 4,
+    borderWidth: 1,
+    borderColor: "#e7eaef",
+  },
+  foodText: { fontSize: 20, fontWeight: "700", color: "#2c3e50", marginBottom: 6 },
+  locationText: { fontSize: 16, color: "#596e79", marginBottom: 5 },
+  statusText: { fontSize: 16, color: "#1abc9c", fontWeight: "600", marginBottom: 12 },
+  buttonContainer: { flexDirection: "row", justifyContent: "space-between", marginTop: 5 },
+  deliverButton: {
+    flex: 0.48,
+    paddingVertical: 12,
+    borderRadius: 14,
+    alignItems: "center",
+    backgroundColor: "#1dd1a1",
+    shadowColor: "#1dd1a1",
+    shadowOpacity: 0.3,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 6,
+  },
+  deleteButton: {
+    flex: 0.48,
+    paddingVertical: 12,
+    borderRadius: 14,
+    alignItems: "center",
+    backgroundColor: "#ff6b6b",
+    shadowColor: "#ff6b6b",
+    shadowOpacity: 0.25,
+    shadowRadius: 10,
+    shadowOffset: { width: 0, height: 4 },
+    elevation: 6,
+  },
+  buttonText: { color: "#fff", fontSize: 17, fontWeight: "700", letterSpacing: 0.5 },
+});

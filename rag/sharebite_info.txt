@@ -1,4 +1,3 @@
-
 1. What is ShareBite - ShareBite is a food donation platform designed to connect people with surplus food to those in need ,it allows restaurants ,individuals, and event organizers to donate leftover food safely and efficiently.
 2. What is Add Donation – Donors can list their name, food items, quantity, pickup location.
 3. What is Donation History – Here u can see can all the donations donations which are being to donate.

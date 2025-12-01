@@ -1,66 +1,150 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Button, Alert } from "react-native";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from "react-native";
 import axios from "axios";
 
-// ✅ SignupScreen component – allows new users to register
 export default function SignupScreen({ navigation }) {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
 
-  // ✅ State variables to store input values
-  const [name, setName] = useState("");      // Stores user's name
-  const [email, setEmail] = useState("");    // Stores user's email
-  const [password, setPassword] = useState(""); // Stores user's password
-
-  // ✅ Function to handle signup button click
   const handleSignup = async () => {
-    try {
-      // 🔹 Send POST request to backend API with user data
-      await axios.post("https://sharebite-8dqo.onrender.com/api/auth/signup", { name, email, password });
-      
-      // 🔹 Show success alert
-      Alert.alert("Success", "User registered successfully!");
-      
-      // 🔹 Navigate to Login screen after successful signup
-      navigation.replace("Login");
-    } catch {
-      // 🔹 Show error alert if signup fails
-      Alert.alert("Error", "Failed to register!");
-    }
-  };
+  try {
+    const res = await axios.post(
+      "http://10.120.88.14:10000/api/auth/signup",
+      { name, email, password }
+    );
+    Alert.alert("Success", res.data.message);
+    navigation.replace("Login");
+  } catch (err) {
+    const msg = err.response?.data?.message || "Failed to register!";
+    Alert.alert("Signup Failed", msg);
+  }
+};
+
 
   return (
-    // ✅ Main container
-    <View style={{ padding: 20 }}>
-      
-      {/* ✅ Screen title */}
-      <Text style={{ fontSize: 24, fontWeight: "bold", marginBottom: 10 }}>Sign Up</Text>
-      
-      {/* ✅ Input field for name */}
-      <TextInput 
-        placeholder="Name" 
-        value={name} 
-        onChangeText={setName} 
-        style={{ borderWidth: 1, padding: 10, marginBottom: 10 }} 
-      />
-      
-      {/* ✅ Input field for email */}
-      <TextInput 
-        placeholder="Email" 
-        value={email} 
-        onChangeText={setEmail} 
-        style={{ borderWidth: 1, padding: 10, marginBottom: 10 }} 
-      />
-      
-      {/* ✅ Input field for password */}
-      <TextInput 
-        placeholder="Password" 
-        value={password} 
-        onChangeText={setPassword} 
-        secureTextEntry // Hides the password
-        style={{ borderWidth: 1, padding: 10, marginBottom: 10 }} 
-      />
-      
-      {/* ✅ Register button */}
-      <Button title="Register" onPress={handleSignup} />
+    <View style={styles.container}>
+      {/* GLASS CARD */}
+      <View style={styles.card}>
+        <Text style={styles.title}>Create Account ✨</Text>
+
+        <TextInput
+          placeholder="Full Name"
+          placeholderTextColor="#95a5a6"
+          value={name}
+          onChangeText={setName}
+          style={styles.input}
+        />
+
+        <TextInput
+          placeholder="Email"
+          placeholderTextColor="#95a5a6"
+          value={email}
+          onChangeText={setEmail}
+          style={styles.input}
+        />
+
+        <TextInput
+          placeholder="Password"
+          placeholderTextColor="#95a5a6"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          style={styles.input}
+        />
+
+        {/* REGISTER BUTTON */}
+        <TouchableOpacity style={styles.button} onPress={handleSignup}>
+          <Text style={styles.buttonText}>Register</Text>
+        </TouchableOpacity>
+
+        {/* LINK */}
+        <TouchableOpacity onPress={() => navigation.navigate("Login")}>
+          <Text style={styles.link}>Already have an account? Login</Text>
+        </TouchableOpacity>
+
+      </View>
     </View>
   );
 }
+
+// Your existing styles remain unchanged
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#27ae60",
+    backgroundImage: "linear-gradient(180deg, #2ecc71, #27ae60)",
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 25,
+  },
+  card: {
+    width: "100%",
+    padding: 30,
+    borderRadius: 25,
+    backgroundColor: "rgba(255,255,255,0.25)",
+    borderWidth: 1,
+    borderColor: "rgba(255,255,255,0.4)",
+    shadowColor: "#000",
+    shadowOpacity: 0.25,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 6 },
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: "900",
+    color: "#fff",
+    textAlign: "center",
+    marginBottom: 25,
+    letterSpacing: 1,
+    textShadowColor: "rgba(255,255,255,0.6)",
+    textShadowOffset: { width: 0, height: 0 },
+    textShadowRadius: 12,
+  },
+  input: {
+    backgroundColor: "rgba(255,255,255,0.9)",
+    padding: 15,
+    borderRadius: 14,
+    fontSize: 16,
+    marginBottom: 15,
+    color: "#2c3e50",
+    shadowColor: "#000",
+    shadowOpacity: 0.1,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 2 },
+  },
+  button: {
+    backgroundColor: "#2980b9",
+    padding: 15,
+    borderRadius: 14,
+    alignItems: "center",
+    marginTop: 10,
+    shadowColor: "#2980b9",
+    shadowOpacity: 0.5,
+    shadowRadius: 12,
+    shadowOffset: { width: 0, height: 4 },
+  },
+  buttonText: {
+    color: "#fff",
+    fontSize: 18,
+    fontWeight: "bold",
+    letterSpacing: 0.5,
+  },
+  link: {
+    color: "#fff",
+    textAlign: "center",
+    marginTop: 18,
+    fontSize: 16,
+    fontWeight: "600",
+    textShadowColor: "rgba(0,0,0,0.3)",
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 4,
+  },
+});

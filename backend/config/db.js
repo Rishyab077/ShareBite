@@ -20,3 +20,9 @@ const connectDB = async () => {
 
 // 🚀 Export the function so it can be used in other files (like server.js)
 export default connectDB;
+
+
+//This file connects your app to MongoDB.
+//If connection works → show success.
+//If connection fails → stop the server.
+// Used in server.js to start the database connection.

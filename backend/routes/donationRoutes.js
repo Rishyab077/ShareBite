@@ -45,6 +45,8 @@ router.get("/", async (req, res) => {
 });
 
 
+
+
 // ---------------------------
 // 🟠 UPDATE Donation Route (PUT)
 // ---------------------------
@@ -61,7 +63,6 @@ router.put("/:id", async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 });
-
 
 // ---------------------------
 // 🔴 DELETE Donation Route (DELETE)
@@ -83,3 +84,26 @@ router.delete("/:id", async (req, res) => {
 
 // 📤 Export router so it can be used in server.js
 export default router;
+
+
+// SUMMARY OF donationRoutes.js
+
+// This file handles all donation-related API routes.
+
+// 1️⃣ POST /
+// Adds a new donation.
+// Frontend sends donation data → it gets saved in MongoDB → returns "Donation added!".
+
+// 2️⃣ GET /
+// Gets ALL donations from the database.
+// Used by admin/volunteer to see all donations.
+
+// 3️⃣ PUT /:id
+// Updates a donation by its ID.
+// Example: mark donation as "delivered" or update details.
+
+// 4️⃣ DELETE /:id
+// Deletes a donation by its ID.
+// Used by admin to remove a donation.
+
+// router is exported so server.js can use these routes.
