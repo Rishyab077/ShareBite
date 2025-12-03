@@ -75,7 +75,7 @@ export default function HomeScreen({ navigation }) {
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.mainButton} onPress={() => navigation.navigate("AvailableDonations")}>
-          <Text style={styles.buttonText}>📋 Donation History</Text>
+          <Text style={styles.buttonText}>📋 Available Donations</Text>
         </TouchableOpacity>
 
         <TouchableOpacity style={styles.mainButton} onPress={() => navigation.navigate("AIAssistant")}>

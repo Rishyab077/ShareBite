@@ -22,7 +22,7 @@ const slides = [
   },
   {
     key: "2",
-    title: "Donation History 📋",
+    title: "Available Donations 📋",
     desc: "You can view all available donations — transparent and simple.",
     accent: "#2d9cdb",
   },
