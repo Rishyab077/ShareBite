@@ -4,7 +4,6 @@ import os
 
 app = Flask(__name__)
 
-# ✅ API endpoint for asking questions
 @app.route("/ask", methods=["POST"])
 def ask_question():
     try:
@@ -25,7 +24,6 @@ def ask_question():
         return jsonify({"error": str(e)}), 500
 
 
+# ❗ Do NOT set host/port when using Gunicorn (Render will ignore it)
 if __name__ == "__main__":
-    # ✅ IMPORTANT for Render: use Render-assigned PORT
-    port = int(os.environ.get("PORT", 8000))
-    app.run(host="0.0.0.0", port=port)
+    app.run(debug=True)
