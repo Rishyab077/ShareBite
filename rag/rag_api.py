@@ -1,5 +1,6 @@
 from flask import Flask, request, jsonify
 from rag_engine import get_answer
+import os
 
 app = Flask(__name__)
 
@@ -25,5 +26,6 @@ def ask_question():
 
 
 if __name__ == "__main__":
-    # ✅ Run Flask on all network interfaces (for Expo/Firebase access)
-    app.run(host="0.0.0.0", port=8000)
+    # ✅ IMPORTANT for Render: use Render-assigned PORT
+    port = int(os.environ.get("PORT", 8000))
+    app.run(host="0.0.0.0", port=port)
